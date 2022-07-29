@@ -2,7 +2,7 @@
   "name": "gleb-agit-map",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ngroshkov.github.io/gleb_agit_map",
+  "homepage": "https://ngroshkov.github.io/gleb_agit_map/",
   "dependencies": {
     "@turf/bbox-polygon": "^6.5.0",
     "@turf/difference": "^6.5.0",
