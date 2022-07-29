@@ -2,7 +2,7 @@
   "name": "gleb-agit-map",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ngroshkov.github.io",
+  "homepage": "https://ngroshkov.github.io/gleb_agit_map",
   "dependencies": {
     "@turf/bbox-polygon": "^6.5.0",
     "@turf/difference": "^6.5.0",
@@ -28,7 +28,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -b master -d build"
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
