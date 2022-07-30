@@ -23,16 +23,6 @@ class App extends React.Component<AppProps, AppState> {
 
 	private handleClick = (properties: any) => {
 		this.setState({properties:properties})
-		// if (properties == null) {
-		// 	this.setState({description:descriptions[0]})
-		// } else {
-		// 	let foundDescriptions = descriptions.filter(o => o.id === id);
-		// 	if (foundDescriptions.length === 0) {
-		// 		this.setState({description:descriptions[0]})
-		// 	} else {
-		// 		this.setState({description:foundDescriptions[0]})
-		// 	}
-		// }
 	}
 
 	public render() {
