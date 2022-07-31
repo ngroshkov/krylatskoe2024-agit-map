@@ -5,7 +5,7 @@ import turfDifference from '@turf/difference';
 
 export interface CityBoundaryLayerProps {
 	features: GeoJSON.Feature<GeoJSON.GeometryObject>[];
-};
+}
 
 function CityBoundaryLayer(props: CityBoundaryLayerProps) {
 	let feature: any  = props.features[0];
@@ -26,7 +26,7 @@ export interface BuildingsLayerProps {
 	onBuildingsMouseEnter?: any;
 	onBuildingsMouseLeave?: any;
 	onBuildingsClick?: any;
-};
+}
 
 function BuildingsLayer(props: BuildingsLayerProps) {
 	return (<GeoJSONLayer

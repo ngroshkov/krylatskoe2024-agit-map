@@ -4,10 +4,6 @@ export interface ToolbarProps {
     properties: any
 }
 
-export interface ToolbarValueProps {
-    value: string;
-}
-
 function Toolbar(props: ToolbarProps) {
     const style = {
         position: 'absolute' as 'absolute',
@@ -21,7 +17,18 @@ function Toolbar(props: ToolbarProps) {
         textAlign: 'center' as const,
         padding: '15px'
     };
-    return (<div style={style}>
+
+    const codes = props.properties != null ?
+        Object.entries(JSON.parse(props.properties.codes_json))
+            .map((val, index) => {
+                const key = val[1] != null ?
+                    <span>{val[0] + ": " + val[1]}</span> :
+                    <span>{val[0] + ": "}<b style={{color:"red"}}>Нет кода</b></span>
+                return <span key={index}>{key}<br/></span>
+            })
+        : <span/>
+
+    return <div style={style}>
             <table style={{width: '100%'}}>
                 <tbody>
                 <tr>
@@ -35,58 +42,18 @@ function Toolbar(props: ToolbarProps) {
                 <tr style={{textAlign: "left" as const}}>
                     <td style={{padding: "5px", verticalAlign: "top" as const}}>
                         <b>УИК:</b> {props.properties != null ? <span>№ {props.properties['address:uik']}</span> : ""}<br/>
-                        <b>Кол-во жителей:</b> {props.properties != null ? <span>{props.properties['address:residents']}</span> : ""}<br/>
-                        <b>Кол-во квартир:</b> {props.properties != null ? <span>{props.properties['address:apartments']}</span> : ""}<br/>
-                        <b>Кол-во подъездов:</b> {props.properties != null ? <span>{props.properties['address:halls']}</span> : ""}<br/>
+                        <b>Жителей:</b> {props.properties != null ? <span>{props.properties['address:residents']}</span> : ""}<br/>
+                        <b>Квартир:</b> {props.properties != null ? <span>{props.properties['address:apartments']}</span> : ""}<br/>
+                        <b>Подъездов:</b> {props.properties != null ? <span>{props.properties['address:halls']}</span> : ""}<br/>
                     </td>
                     <td style={{padding: "5px", verticalAlign: "top" as const}}>
-                        <b>Коды домофона:</b><br/>
+                        <b>Коды домофонов:</b><br/>
+                        <span>{codes}</span>
                     </td>
                 </tr>
                 </tbody>
             </table>
-        </div>
-    );
+        </div>;
 }
 
 export default Toolbar;
-
-function Title(props: any) {
-    const style = {
-        margin: '0px'
-    }
-    return (
-        <table style={{height: '100%'}}>
-            <tbody>
-            <tr>
-                <th colSpan={2}>
-                    <h2 style={style}>{props.value}</h2>
-                </th>
-            </tr>
-            </tbody>
-        </table>);
-}
-
-
-function Image(props: any) {
-    const style = {
-        width: '100%'
-    }
-    return (<img style={style} src={props.value}/>)
-}
-
-function Text(props: any) {
-    const style = {
-        position: 'absolute' as 'absolute',
-        top: '290px',
-        left: '15px',
-        right: '15px',
-        bottom: '15px',
-        overflow: 'auto' as 'auto',
-        paddingRight: '5px',
-        textAlign: 'justify' as const
-    }
-    return (<div style={style}
-                 dangerouslySetInnerHTML={{__html: '&nbsp;&nbsp;&nbsp;&nbsp;' + props.value}}
-    />)
-}

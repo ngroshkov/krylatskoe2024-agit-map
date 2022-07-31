@@ -21,14 +21,14 @@ const buildingDatasetId = 'cl66oxjy700vc2bqod4x9l5hx';
 
 export interface GpMapProps {
 	onClick: any;
-};
+}
 
 export interface GpMapState {
 	boundary: GeoJSON.Feature<GeoJSON.GeometryObject>[];
 	buildings: GeoJSON.Feature<GeoJSON.GeometryObject>[];
 	hoverBuildings: GeoJSON.Feature<GeoJSON.GeometryObject>[];
 	clickBuildings: GeoJSON.Feature<GeoJSON.GeometryObject>[];
-};
+}
 
 export default class GpMap extends React.Component<GpMapProps, GpMapState> {
 	constructor(props : GpMapProps) {
@@ -56,7 +56,7 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
 		this.setState({hoverBuildings: blds});
 	}
 
-	private handleBuildingsLeave = (e: any) => {
+	private handleBuildingsLeave = () => {
 		this.setState({hoverBuildings: []});
 	}
 

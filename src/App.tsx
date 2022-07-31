@@ -1,9 +1,7 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import GpMap from './map';
 import Toolbar from './toolbar';
-import Description, {descriptions} from './data/descriptions';
 
 export interface AppProps {
 }
