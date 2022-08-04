@@ -18,39 +18,39 @@ function Toolbar(props: ToolbarProps) {
         padding: '15px'
     };
 
-    const codes = props.properties != null ?
-        Object.entries(JSON.parse(props.properties.codes_json))
-            .map((val, index) => {
-                const key = val[1] != null ?
-                    <span>{val[0] + ": " + val[1]}</span> :
-                    <span>{val[0] + ": "}<b style={{color:"red"}}>Нет кода</b></span>
-                return <span key={index}>{key}<br/></span>
-            })
-        : <span/>
+    const contacts = props.properties != null ?
+        JSON.parse(props.properties.contacts != 'null' ? props.properties.contacts : '[]')
+            .map((val: any, index: any) => {
+                let name = Object.keys(val)[0]
+                let apartment = val[name]
+                return <span key={index}>{name} - {apartment}<br/></span>
+            }) : <span/>
 
     return <div style={style}>
-            <table style={{width: '100%'}}>
-                <tbody>
-                <tr>
-                    <th colSpan={2}>
-                        <h3 style={{margin: '0px'}}>
-                            <b>Адрес:</b>
-                            {props.properties != null ? props.properties['address:address'] : ""}
-                        </h3>
-                    </th>
-                </tr>
-                <tr style={{textAlign: "left" as const}}>
-                    <td style={{padding: "5px", verticalAlign: "top" as const}}>
-                        <b>УИК:</b> {props.properties != null ? <span>№ {props.properties['address:uik']}</span> : ""}<br/>
-                        <b>Жителей:</b> {props.properties != null ? <span>{props.properties['address:residents']}</span> : ""}<br/>
-                        <b>Квартир:</b> {props.properties != null ? <span>{props.properties['address:apartments']}</span> : ""}<br/>
-                        <b>Подъездов:</b> {props.properties != null ? <span>{props.properties['address:halls']}</span> : ""}<br/>
-                    </td>
-                    <td style={{padding: "5px", verticalAlign: "top" as const}}>
-                        <b>Коды домофонов:</b><br/>
-                        <span>{codes}</span>
-                    </td>
-                </tr>
+            <table style={{width: '100%', height: '100%', display: 'flex', flexFlow: 'column'}}>
+                <thead>
+                    <tr>
+                        <th colSpan={2}>
+                            <h3 style={{margin: '0px'}}>
+                                <b>Адрес:</b>
+                                {props.properties != null ? props.properties['address:address'] : ""}
+                            </h3>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody style={{flex: '1 1 auto', display: 'block', overflowY: 'scroll'}}>
+                    <tr style={{textAlign: "left" as const}}>
+                        <td style={{padding: "5px", verticalAlign: "top" as const}}>
+                            <b>УИК:</b> {props.properties != null ? <span>№ {props.properties['address:uik']}</span> : ""}<br/>
+                            <b>Жителей:</b> {props.properties != null ? <span>{props.properties['address:residents']}</span> : ""}<br/>
+                            <b>Квартир:</b> {props.properties != null ? <span>{props.properties['address:apartments']}</span> : ""}<br/>
+                            <b>Подъездов:</b> {props.properties != null ? <span>{props.properties['address:halls']}</span> : ""}<br/>
+                        </td>
+                        <td style={{padding: "5px", verticalAlign: "top" as const}}>
+                            <b>Контакты:</b><br/>
+                            <span>{contacts}</span>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>;
