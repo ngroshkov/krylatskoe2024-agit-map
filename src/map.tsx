@@ -11,8 +11,8 @@ const mapbox = new MapboxClient(accessToken);
 const mapProperties = {
     center: [37.79929327748674, 55.79452505631096] as [number, number],
     zoom: [14.5] as [number],
-    pitch: [0] as [number],
-    bearing: [0] as [number]
+    pitch: [50] as [number],
+    bearing: [20] as [number]
 }
 
 const styleId = 'mapbox://styles/kln4/cl65cx61a000c15ljmv271d6d';
@@ -105,7 +105,7 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
             <BuildingsLayer features={this.state.clickBuildings} opacity={1}/>
             <BuildingCentroidsLayer features={this.state.buildingCentroids} circle={true}/>
             <BuildingCentroidsLayer features={this.state.buildingCentroids} symbol={true} />
-            <ZoomControl position="top-left"/>
+            <ZoomControl position="top-right"/>
         </Mapbox>
     }
 }

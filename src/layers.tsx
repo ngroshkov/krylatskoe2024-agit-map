@@ -34,16 +34,24 @@ function BuildingsLayer(props: BuildingsLayerProps) {
             'type': 'FeatureCollection',
             'features': props.features
         }}
-        fillPaint={{
-            'fill-color': {
+        fillExtrusionPaint={{
+            'fill-extrusion-color': {
                 'property': 'color',
                 'type': 'identity'
             },
-            'fill-opacity': props.opacity
+            'fill-extrusion-height': {
+                'property': 'level',
+                'type': 'identity'
+            },
+            'fill-extrusion-base': {
+                'property': 'base_height',
+                'type': 'identity'
+            },
+            'fill-extrusion-opacity': props.opacity
         }}
-        fillOnMouseEnter={props.onBuildingsMouseEnter}
-        fillOnMouseLeave={props.onBuildingsMouseLeave}
-        fillOnClick={props.onBuildingsClick}
+        fillExtrusionOnMouseEnter={props.onBuildingsMouseEnter}
+        fillExtrusionOnMouseLeave={props.onBuildingsMouseLeave}
+        fillExtrusionOnClick={props.onBuildingsClick}
     />);
 }
 
