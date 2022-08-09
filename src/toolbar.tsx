@@ -21,9 +21,9 @@ function Toolbar(props: ToolbarProps) {
     const contacts = props.properties != null ?
         JSON.parse(props.properties.contacts != 'null' ? props.properties.contacts : '[]')
             .map((val: any, index: any) => {
-                let name = Object.keys(val)[0]
-                let apartment = val[name]
-                return <span key={index}>{name} - {apartment}<br/></span>
+                let fio = val['fio']
+                let apartment = val['apartment']
+                return <span key={index}>{fio} - {apartment}<br/></span>
             }) : <span/>
 
     return <div style={style}>
