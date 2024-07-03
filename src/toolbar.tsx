@@ -18,13 +18,17 @@ function Toolbar(props: ToolbarProps) {
         padding: '15px'
     };
 
-    const contacts = props.properties != null ?
-        JSON.parse(props.properties.contacts != 'null' ? props.properties.contacts : '[]')
-            .map((val: any, index: any) => {
-                let fio = val['fio']
-                let apartment = val['apartment']
-                return <span key={index}>{fio} - {apartment}<br/></span>
-            }) : <span/>
+    const address = props?.properties?.['address'] || "";
+    const uik = props?.properties?.['uik'] ||  "";
+    const flats = props?.properties?.['building:flats'] || "";
+
+    // const contacts = props.properties != null ?
+    //     JSON.parse(props.properties.contacts != 'null' ? props.properties.contacts : '[]')
+    //         .map((val: any, index: any) => {
+    //             let fio = val['fio']
+    //             let apartment = val['apartment']
+    //             return <span key={index}>{fio} - {apartment}<br/></span>
+    //         }) : <span/>
 
     return <div style={style}>
             <table style={{width: '100%', height: '100%', display: 'flex', flexFlow: 'column'}}>
@@ -32,8 +36,8 @@ function Toolbar(props: ToolbarProps) {
                     <tr>
                         <th colSpan={2}>
                             <h3 style={{margin: '0px'}}>
-                                <b>Адрес:</b>
-                                {props.properties != null ? props.properties['address:address'] : ""}
+                                <b>Адрес:&nbsp;</b>
+                                {address}
                             </h3>
                         </th>
                     </tr>
@@ -41,14 +45,14 @@ function Toolbar(props: ToolbarProps) {
                 <tbody style={{flex: '1 1 auto', display: 'block', overflowY: 'scroll'}}>
                     <tr style={{textAlign: "left" as const}}>
                         <td style={{padding: "5px", verticalAlign: "top" as const}}>
-                            <b>УИК:</b> {props.properties != null ? <span>№ {props.properties['address:uik']}</span> : ""}<br/>
-                            <b>Жителей:</b> {props.properties != null ? <span>{props.properties['address:residents']}</span> : ""}<br/>
-                            <b>Квартир:</b> {props.properties != null ? <span>{props.properties['address:apartments']}</span> : ""}<br/>
-                            <b>Подъездов:</b> {props.properties != null ? <span>{props.properties['address:halls']}</span> : ""}<br/>
+                            <b>УИК:</b> <span>№ {uik}</span> <br/>
+                            {/*<b>Жителей:</b> {props.properties != null ? <span>{props.properties['address:residents']}</span> : ""}<br/>*/}
+                            <b>Квартир:</b> <span>{flats}</span> <br/>
+                            {/*<b>Подъездов:</b> {props.properties != null ? <span>{props.properties['address:halls']}</span> : ""}<br/>*/}
                         </td>
                         <td style={{padding: "5px", verticalAlign: "top" as const}}>
-                            <b>Контакты:</b><br/>
-                            <span>{contacts}</span>
+                            {/*<b>Контакты:</b><br/>*/}
+                            {/*<span>{contacts}</span>*/}
                         </td>
                     </tr>
                 </tbody>

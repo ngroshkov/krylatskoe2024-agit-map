@@ -1,10 +1,11 @@
 {
-  "name": "gleb-agit-map",
+  "name": "krylatskoe2024-agit-map",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ngroshkov.github.io/gleb-agit-map",
+  "homepage": "https://ngroshkov.github.io/krylatskoe2024-agit-map",
   "dependencies": {
     "@turf/bbox-polygon": "^6.5.0",
+    "@turf/centroid": "^7.0.0",
     "@turf/difference": "^6.5.0",
     "@types/jest": "^27.5.2",
     "@types/mapbox-gl": "^0.40.1",

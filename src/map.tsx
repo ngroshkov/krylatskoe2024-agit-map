@@ -1,5 +1,6 @@
 import * as React from 'react';
 import ReactMapboxGl, {ZoomControl} from 'react-mapbox-gl';
+import turfCentroid from '@turf/centroid';
 
 import {CityBoundaryLayer, BuildingsLayer, BuildingCentroidsLayer} from './layers';
 
@@ -9,16 +10,15 @@ const MapboxClient = require('mapbox');
 const mapbox = new MapboxClient(accessToken);
 
 const mapProperties = {
-    center: [37.79929327748674, 55.79452505631096] as [number, number],
-    zoom: [14.5] as [number],
-    pitch: [50] as [number],
-    bearing: [20] as [number]
+    center: [37.421185, 55.745608] as [number, number],
+    zoom: [13] as [number],
+    pitch: [60] as [number],
+    bearing: [60] as [number]
 }
 
 const styleId = 'mapbox://styles/kln4/cl65cx61a000c15ljmv271d6d';
-const boundaryDatasetId = 'cl65d7hdn045l22qotk8e13ok';
-const buildingDatasetId = 'cl66oxjy700vc2bqod4x9l5hx';
-const buildingCentroidsId = 'cl6dx5mbl07tb2emp8ioiitp7';
+const boundaryDatasetId = 'cly4bv93305ub1mocq5fyf8uq';
+const buildingDatasetId = 'cly4jnyos8ybp1tnx9skz7oi6';
 
 export interface GpMapProps {
     onClick: any;
@@ -49,10 +49,10 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
             this.setState({boundary: boundary.features});
         });
         mapbox.listFeatures(buildingDatasetId, {}, (err: any, buildings: GeoJSON.FeatureCollection<GeoJSON.GeometryObject>) => {
-            this.setState({buildings: buildings.features});
-        });
-        mapbox.listFeatures(buildingCentroidsId, {}, (err: any, buildingCentroids: GeoJSON.FeatureCollection<GeoJSON.GeometryObject>) => {
-            this.setState({buildingCentroids: buildingCentroids.features});
+            this.setState({
+                buildings: buildings.features,
+                buildingCentroids: buildings.features.map(feature => turfCentroid(feature))
+            });
         });
     }
 
@@ -103,8 +103,8 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
             />
             <BuildingsLayer features={this.state.hoverBuildings} opacity={0.8}/>
             <BuildingsLayer features={this.state.clickBuildings} opacity={1}/>
-            <BuildingCentroidsLayer features={this.state.buildingCentroids} circle={true}/>
-            <BuildingCentroidsLayer features={this.state.buildingCentroids} symbol={true} />
+            {/*<BuildingCentroidsLayer features={this.state.buildingCentroids} circle={true}/>*/}
+            {/*<BuildingCentroidsLayer features={this.state.buildingCentroids} symbol={true} />*/}
             <ZoomControl position="top-right"/>
         </Mapbox>
     }
