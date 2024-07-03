@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/krylatskoe2024-agit-map/static/css/main.1000e595.css",
+    "main.js": "/krylatskoe2024-agit-map/static/js/main.220e6828.js",
+    "static/js/787.23b48700.chunk.js": "/krylatskoe2024-agit-map/static/js/787.23b48700.chunk.js",
+    "index.html": "/krylatskoe2024-agit-map/index.html",
+    "main.1000e595.css.map": "/krylatskoe2024-agit-map/static/css/main.1000e595.css.map",
+    "main.220e6828.js.map": "/krylatskoe2024-agit-map/static/js/main.220e6828.js.map",
+    "787.23b48700.chunk.js.map": "/krylatskoe2024-agit-map/static/js/787.23b48700.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1000e595.css",
+    "static/js/main.220e6828.js"
+  ]
+}
