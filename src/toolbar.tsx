@@ -10,7 +10,7 @@ function Toolbar(props: ToolbarProps) {
         left: '5px',
         right: '5px',
         bottom: '5px',
-        height: '200px',
+        height: '110px',
         backgroundColor: 'white',
         borderRadius: '10px',
         opacity: 0.9,
@@ -21,6 +21,7 @@ function Toolbar(props: ToolbarProps) {
     const address = props?.properties?.['address'] || "";
     const uik = props?.properties?.['uik'] ||  "";
     const flats = props?.properties?.['building:flats'] || "";
+    const halls = props?.properties?.['building:halls'] || "";
 
     // const contacts = props.properties != null ?
     //     JSON.parse(props.properties.contacts != 'null' ? props.properties.contacts : '[]')
@@ -35,10 +36,9 @@ function Toolbar(props: ToolbarProps) {
                 <thead>
                     <tr>
                         <th colSpan={2}>
-                            <h3 style={{margin: '0px'}}>
-                                <b>Адрес:&nbsp;</b>
+                            <h4 style={{margin: '0px'}}>
                                 {address}
-                            </h3>
+                            </h4>
                         </th>
                     </tr>
                 </thead>
@@ -48,7 +48,7 @@ function Toolbar(props: ToolbarProps) {
                             <b>УИК:</b> <span>№ {uik}</span> <br/>
                             {/*<b>Жителей:</b> {props.properties != null ? <span>{props.properties['address:residents']}</span> : ""}<br/>*/}
                             <b>Квартир:</b> <span>{flats}</span> <br/>
-                            {/*<b>Подъездов:</b> {props.properties != null ? <span>{props.properties['address:halls']}</span> : ""}<br/>*/}
+                            <b>Подъездов:</b> <span>{halls}</span><br/>
                         </td>
                         <td style={{padding: "5px", verticalAlign: "top" as const}}>
                             {/*<b>Контакты:</b><br/>*/}

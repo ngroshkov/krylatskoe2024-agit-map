@@ -40,7 +40,7 @@ function BuildingsLayer(props: BuildingsLayerProps) {
                 'type': 'identity'
             },
             'fill-extrusion-height': {
-                'property': 'level',
+                'property': 'building:level',
                 'type': 'identity'
             },
             'fill-extrusion-base': {
