@@ -10,10 +10,10 @@ const MapboxClient = require('mapbox');
 const mapbox = new MapboxClient(accessToken);
 
 const mapProperties = {
-    center: [37.421185, 55.745608] as [number, number],
-    zoom: [13] as [number],
+    center: [37.420573, 55.737134] as [number, number],
+    zoom: [12] as [number],
     pitch: [60] as [number],
-    bearing: [60] as [number]
+    bearing: [0] as [number]
 }
 
 const styleId = 'mapbox://styles/kln4/cl65cx61a000c15ljmv271d6d';
