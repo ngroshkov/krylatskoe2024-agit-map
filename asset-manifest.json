@@ -1,15 +1,17 @@
 {
   "files": {
-    "main.css": "/krylatskoe2024-agit-map/static/css/main.1000e595.css",
-    "main.js": "/krylatskoe2024-agit-map/static/js/main.3f738a8e.js",
-    "static/js/787.23b48700.chunk.js": "/krylatskoe2024-agit-map/static/js/787.23b48700.chunk.js",
+    "main.css": "/krylatskoe2024-agit-map/static/css/main.bad793ee.css",
+    "main.js": "/krylatskoe2024-agit-map/static/js/main.6ebe3413.js",
+    "static/js/879.119918c8.chunk.js": "/krylatskoe2024-agit-map/static/js/879.119918c8.chunk.js",
+    "static/js/453.612321b0.chunk.js": "/krylatskoe2024-agit-map/static/js/453.612321b0.chunk.js",
     "index.html": "/krylatskoe2024-agit-map/index.html",
-    "main.1000e595.css.map": "/krylatskoe2024-agit-map/static/css/main.1000e595.css.map",
-    "main.3f738a8e.js.map": "/krylatskoe2024-agit-map/static/js/main.3f738a8e.js.map",
-    "787.23b48700.chunk.js.map": "/krylatskoe2024-agit-map/static/js/787.23b48700.chunk.js.map"
+    "main.bad793ee.css.map": "/krylatskoe2024-agit-map/static/css/main.bad793ee.css.map",
+    "main.6ebe3413.js.map": "/krylatskoe2024-agit-map/static/js/main.6ebe3413.js.map",
+    "879.119918c8.chunk.js.map": "/krylatskoe2024-agit-map/static/js/879.119918c8.chunk.js.map",
+    "453.612321b0.chunk.js.map": "/krylatskoe2024-agit-map/static/js/453.612321b0.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1000e595.css",
-    "static/js/main.3f738a8e.js"
+    "static/css/main.bad793ee.css",
+    "static/js/main.6ebe3413.js"
   ]
 }
