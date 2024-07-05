@@ -2,13 +2,16 @@ import * as React from 'react';
 import ReactMapboxGl, {ZoomControl} from 'react-mapbox-gl';
 import turfCentroid from '@turf/centroid';
 import {FeatureCollection, Feature, Polygon, MultiPolygon, Point} from 'geojson';
-
 import {CityBoundaryLayer, BuildingsLayer, BuildingCentroidsLayer} from './layers';
+// import MapiClient from "@mapbox/mapbox-sdk/lib/classes/mapi-client";
+import mbxDatasets from "@mapbox/mapbox-sdk/services/datasets";
 
 const accessToken = "pk.eyJ1Ijoia2xuNCIsImEiOiJjaW9sNjZlbWMwMDEwdzVtNmxxYjA2ZGozIn0.BytaphQwtjCVMGEaLlfb3Q";
 const Mapbox = ReactMapboxGl({accessToken: accessToken});
-const MapboxClient = require('mapbox');
-const mapbox = new MapboxClient(accessToken);
+const MapiClient = require('@mapbox/mapbox-sdk')
+// const mapiClient = new MapiClient({accessToken})
+const mapiClient = new MapiClient({accessToken})
+const datasetService = mbxDatasets(mapiClient);
 
 const mapProperties = {
     center: [37.420573, 55.737134] as [number, number],
@@ -46,15 +49,32 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
     }
 
     public componentDidMount() {
-        mapbox.listFeatures(boundaryDatasetId, {}, (err: any, boundary: FeatureCollection<Polygon | MultiPolygon>) => {
-            this.setState({boundary: boundary.features});
-        });
-        mapbox.listFeatures(buildingDatasetId, {}, (err: any, buildings: FeatureCollection<Polygon | MultiPolygon>) => {
-            this.setState({
-                buildings: buildings.features,
-                buildingCentroids: buildings.features.map(feature => turfCentroid(feature))
-            });
-        });
+        datasetService
+            .listFeatures({datasetId: boundaryDatasetId})
+            .send()
+            .then(
+                response => {
+                    let boundary: FeatureCollection<Polygon | MultiPolygon> = response.body
+                    this.setState({boundary: boundary.features})
+                },
+                error => console.log(error)
+        )
+        datasetService
+            .listFeatures({datasetId: buildingDatasetId})
+            .send()
+            .then(
+                response => {
+                    let buildings: FeatureCollection<Polygon | MultiPolygon> = response.body
+                    let buildingFeatures = buildings.features
+                    let buildingCentroidFeatures = buildings.features
+                        .map(feature => turfCentroid(feature))
+                    this.setState({
+                        buildings: buildingFeatures,
+                        buildingCentroids: buildingCentroidFeatures
+                    })
+                },
+                error => console.log(error)
+            )
     }
 
     private handleBuildingsEnter = (e: any) => {
