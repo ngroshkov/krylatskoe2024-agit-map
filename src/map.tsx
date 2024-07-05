@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ReactMapboxGl, {ZoomControl} from 'react-mapbox-gl';
 import turfCentroid from '@turf/centroid';
+import {FeatureCollection, Feature, Polygon, MultiPolygon, Point} from 'geojson';
 
 import {CityBoundaryLayer, BuildingsLayer, BuildingCentroidsLayer} from './layers';
 
@@ -25,11 +26,11 @@ export interface GpMapProps {
 }
 
 export interface GpMapState {
-    boundary: GeoJSON.Feature<GeoJSON.GeometryObject>[];
-    buildings: GeoJSON.Feature<GeoJSON.GeometryObject>[];
-    hoverBuildings: GeoJSON.Feature<GeoJSON.GeometryObject>[];
-    clickBuildings: GeoJSON.Feature<GeoJSON.GeometryObject>[];
-    buildingCentroids: GeoJSON.Feature<GeoJSON.GeometryObject>[];
+    boundary: Feature<Polygon | MultiPolygon>[];
+    buildings: Feature<Polygon | MultiPolygon>[];
+    hoverBuildings: Feature<Polygon | MultiPolygon>[];
+    clickBuildings: Feature<Polygon | MultiPolygon>[];
+    buildingCentroids: Feature<Point>[];
 }
 
 export default class GpMap extends React.Component<GpMapProps, GpMapState> {
@@ -45,10 +46,10 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
     }
 
     public componentDidMount() {
-        mapbox.listFeatures(boundaryDatasetId, {}, (err: any, boundary: GeoJSON.FeatureCollection<GeoJSON.GeometryObject>) => {
+        mapbox.listFeatures(boundaryDatasetId, {}, (err: any, boundary: FeatureCollection<Polygon | MultiPolygon>) => {
             this.setState({boundary: boundary.features});
         });
-        mapbox.listFeatures(buildingDatasetId, {}, (err: any, buildings: GeoJSON.FeatureCollection<GeoJSON.GeometryObject>) => {
+        mapbox.listFeatures(buildingDatasetId, {}, (err: any, buildings: FeatureCollection<Polygon | MultiPolygon>) => {
             this.setState({
                 buildings: buildings.features,
                 buildingCentroids: buildings.features.map(feature => turfCentroid(feature))
@@ -74,7 +75,8 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
             let id = e.features[0].properties.id
             let properties = e.features[0].properties
             this.props.onClick(properties)
-            let blds = this.state.buildings.filter(feature => feature.properties!.id === id)
+            let blds = this.state.buildings
+                .filter(feature => feature.properties!.id === id)
             this.setState({clickBuildings: blds});
         }
     }

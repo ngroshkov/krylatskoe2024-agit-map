@@ -2,15 +2,18 @@ import * as React from 'react';
 import {GeoJSONLayer} from 'react-mapbox-gl';
 import turfBboxPolygon from '@turf/bbox-polygon';
 import turfDifference from '@turf/difference';
+import {featureCollection} from '@turf/helpers';
+import {Feature, Polygon, MultiPolygon, GeometryObject} from 'geojson';
 
 export interface CityBoundaryLayerProps {
-    features: GeoJSON.Feature<GeoJSON.GeometryObject>[];
+    features: Feature<Polygon | MultiPolygon>[];
 }
 
 function CityBoundaryLayer(props: CityBoundaryLayerProps) {
-    let feature: any = props.features[0];
+    let feature = props.features[0];
     let bounds = turfBboxPolygon([180, 90, -180, -90]);
-    let boundary = turfDifference(bounds, feature);
+    let features = featureCollection([bounds, feature])
+    let boundary = turfDifference(features);
     return (<GeoJSONLayer
         data={boundary}
         fillPaint={{
@@ -21,7 +24,7 @@ function CityBoundaryLayer(props: CityBoundaryLayerProps) {
 }
 
 export interface BuildingsLayerProps {
-    features: GeoJSON.Feature<GeoJSON.GeometryObject>[];
+    features: Feature<Polygon | MultiPolygon>[];
     opacity: number;
     onBuildingsMouseEnter?: any;
     onBuildingsMouseLeave?: any;
@@ -56,7 +59,7 @@ function BuildingsLayer(props: BuildingsLayerProps) {
 }
 
 export interface BuildingCentroidsLayerProps {
-    features: GeoJSON.Feature<GeoJSON.GeometryObject>[];
+    features: Feature<GeometryObject>[];
     symbol?: boolean;
     circle?: boolean;
 }
@@ -74,7 +77,7 @@ function BuildingCentroidsLayer(props: BuildingCentroidsLayerProps) {
         'text-size': 10
     } : null
     let symbolPaint = props.symbol ? {
-        'text-color': [ 'case', ['==', ['get', 'contacts_count'], 0], 'red', 'black' ]
+        'text-color': ['case', ['==', ['get', 'contacts_count'], 0], 'red', 'black']
     } : null
     let circlePaint = props.circle ? {
         'circle-color': "#FFFFFF",
