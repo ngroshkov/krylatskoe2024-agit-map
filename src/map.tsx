@@ -1,23 +1,25 @@
 import * as React from 'react';
-import ReactMapboxGl, {ZoomControl} from 'react-mapbox-gl';
+import InteractiveMap, {MapMouseEvent, NavigationControl} from 'react-map-gl';
 import turfCentroid from '@turf/centroid';
+import {featureCollection} from '@turf/helpers';
 import {FeatureCollection, Feature, Polygon, MultiPolygon, Point} from 'geojson';
-import {CityBoundaryLayer, BuildingsLayer, BuildingCentroidsLayer} from './layers';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import {CityBoundaryLayer, BuildingsLayer} from './layers';
 // import MapiClient from "@mapbox/mapbox-sdk/lib/classes/mapi-client";
 import mbxDatasets from "@mapbox/mapbox-sdk/services/datasets";
 
 const accessToken = "pk.eyJ1Ijoia2xuNCIsImEiOiJjaW9sNjZlbWMwMDEwdzVtNmxxYjA2ZGozIn0.BytaphQwtjCVMGEaLlfb3Q";
-const Mapbox = ReactMapboxGl({accessToken: accessToken});
 const MapiClient = require('@mapbox/mapbox-sdk')
 // const mapiClient = new MapiClient({accessToken})
 const mapiClient = new MapiClient({accessToken})
 const datasetService = mbxDatasets(mapiClient);
 
 const mapProperties = {
-    center: [37.420573, 55.737134] as [number, number],
-    zoom: [12] as [number],
-    pitch: [60] as [number],
-    bearing: [0] as [number]
+    longitude: 37.420573,
+    latitude: 55.737134,
+    zoom: 12,
+    pitch: 60,
+    bearing: 0
 }
 
 const styleId = 'mapbox://styles/kln4/cl65cx61a000c15ljmv271d6d';
@@ -29,10 +31,10 @@ export interface GpMapProps {
 }
 
 export interface GpMapState {
-    boundary: Feature<Polygon | MultiPolygon>[];
-    buildings: Feature<Polygon | MultiPolygon>[];
-    hoverBuildings: Feature<Polygon | MultiPolygon>[];
-    clickBuildings: Feature<Polygon | MultiPolygon>[];
+    boundary: FeatureCollection<Polygon | MultiPolygon>;
+    buildings: FeatureCollection<Polygon | MultiPolygon>;
+    clickedBuilding: Feature<Polygon | MultiPolygon> | null;
+    hoveredBuilding: Feature<Polygon | MultiPolygon> | null;
     buildingCentroids: Feature<Point>[];
 }
 
@@ -40,10 +42,10 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
     constructor(props: GpMapProps) {
         super(props);
         this.state = {
-            boundary: [],
-            buildings: [],
-            hoverBuildings: [],
-            clickBuildings: [],
+            boundary: featureCollection([]),
+            buildings: featureCollection([]),
+            clickedBuilding: null,
+            hoveredBuilding: null,
             buildingCentroids: []
         };
     }
@@ -55,10 +57,10 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
             .then(
                 response => {
                     let boundary: FeatureCollection<Polygon | MultiPolygon> = response.body
-                    this.setState({boundary: boundary.features})
+                    this.setState({boundary: boundary})
                 },
                 error => console.log(error)
-        )
+            )
         datasetService
             .listFeatures({datasetId: buildingDatasetId})
             .send()
@@ -66,10 +68,10 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
                 response => {
                     let buildings: FeatureCollection<Polygon | MultiPolygon> = response.body
                     let buildingFeatures = buildings.features
-                    let buildingCentroidFeatures = buildings.features
+                    let buildingCentroidFeatures = buildingFeatures
                         .map(feature => turfCentroid(feature))
                     this.setState({
-                        buildings: buildingFeatures,
+                        buildings: buildings,
                         buildingCentroids: buildingCentroidFeatures
                     })
                 },
@@ -77,57 +79,51 @@ export default class GpMap extends React.Component<GpMapProps, GpMapState> {
             )
     }
 
-    private handleBuildingsEnter = (e: any) => {
-        let id = e.features[0].properties.id
-        let blds = this.state.buildings.filter(feature => feature.properties!.id === id)
-        this.setState({hoverBuildings: blds});
+    private handleBuildingsEnter = (event: MapMouseEvent) => {
+        let feature = event?.features?.find(f => f.layer.id === 'buildings') || null
+        this.setState({hoveredBuilding: feature});
     }
 
     private handleBuildingsLeave = () => {
-        this.setState({hoverBuildings: []});
+        this.setState({hoveredBuilding: null});
     }
 
-    private handleBuildingsClick = (e: any) => {
-        if (e == null) {
+    private handleBuildingsClick = (event: MapMouseEvent) => {
+        let feature = event?.features?.find(f => f.layer.id === 'buildings') || null
+
+        if (feature == null) {
             this.props.onClick(null)
-            this.setState({clickBuildings: []});
+            this.setState({clickedBuilding: null});
         } else {
-            let id = e.features[0].properties.id
-            let properties = e.features[0].properties
-            this.props.onClick(properties)
-            let blds = this.state.buildings
-                .filter(feature => feature.properties!.id === id)
-            this.setState({clickBuildings: blds});
+            this.props.onClick(feature.properties)
+            this.setState({clickedBuilding: feature});
         }
     }
 
     public render() {
-        return <Mapbox
-            style={styleId}
-            center={mapProperties.center}
-            zoom={mapProperties.zoom}
-            pitch={mapProperties.pitch}
-            bearing={mapProperties.bearing}
-            containerStyle={{
-                position: 'absolute',
-                height: '100%',
-                width: '100%'
-            }}
-            onClick={() => this.handleBuildingsClick(null)}
-        >
-            <CityBoundaryLayer features={this.state.boundary}/>
-            <BuildingsLayer
-                features={this.state.buildings}
-                opacity={0.5}
-                onBuildingsMouseEnter={this.handleBuildingsEnter}
-                onBuildingsMouseLeave={this.handleBuildingsLeave}
-                onBuildingsClick={this.handleBuildingsClick}
-            />
-            <BuildingsLayer features={this.state.hoverBuildings} opacity={0.8}/>
-            <BuildingsLayer features={this.state.clickBuildings} opacity={1}/>
-            {/*<BuildingCentroidsLayer features={this.state.buildingCentroids} circle={true}/>*/}
-            {/*<BuildingCentroidsLayer features={this.state.buildingCentroids} symbol={true} />*/}
-            <ZoomControl position="top-right"/>
-        </Mapbox>
+        return (
+            <InteractiveMap
+                mapboxAccessToken={accessToken}
+                initialViewState={mapProperties}
+                style={{
+                    position: 'absolute',
+                    height: '100%',
+                    width: '100%'
+                }}
+                mapStyle={styleId}
+                interactiveLayerIds={["buildings"]}
+                onClick={this.handleBuildingsClick}
+                onMouseEnter={this.handleBuildingsEnter}
+                onMouseLeave={this.handleBuildingsLeave}
+            >
+                <NavigationControl/>
+                <CityBoundaryLayer featureCollection={this.state.boundary}/>
+                <BuildingsLayer
+                    featureCollection={this.state.buildings}
+                    clickedBuilding={this.state.clickedBuilding}
+                    hoverBuildings={this.state.hoveredBuilding}
+                />
+            </InteractiveMap>
+        )
     }
 }
