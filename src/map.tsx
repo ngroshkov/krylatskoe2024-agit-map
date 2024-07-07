@@ -102,6 +102,8 @@ export default function Map(props: MapProps) {
         props.onClick(buildingFeature || electionCommissionFeature)
         setClickedBuilding(buildingFeature)
         setClickedElectionCommission(electionCommissionFeature)
+        setHoveredBuilding(null)
+        setHoveredElectionCommission(null)
     }
 
     return (
