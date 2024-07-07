@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/krylatskoe2024-agit-map/static/css/main.bad793ee.css",
-    "main.js": "/krylatskoe2024-agit-map/static/js/main.6ebe3413.js",
+    "main.js": "/krylatskoe2024-agit-map/static/js/main.bb9bfbcf.js",
     "static/js/879.119918c8.chunk.js": "/krylatskoe2024-agit-map/static/js/879.119918c8.chunk.js",
     "static/js/453.612321b0.chunk.js": "/krylatskoe2024-agit-map/static/js/453.612321b0.chunk.js",
     "index.html": "/krylatskoe2024-agit-map/index.html",
     "main.bad793ee.css.map": "/krylatskoe2024-agit-map/static/css/main.bad793ee.css.map",
-    "main.6ebe3413.js.map": "/krylatskoe2024-agit-map/static/js/main.6ebe3413.js.map",
+    "main.bb9bfbcf.js.map": "/krylatskoe2024-agit-map/static/js/main.bb9bfbcf.js.map",
     "879.119918c8.chunk.js.map": "/krylatskoe2024-agit-map/static/js/879.119918c8.chunk.js.map",
     "453.612321b0.chunk.js.map": "/krylatskoe2024-agit-map/static/js/453.612321b0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.bad793ee.css",
-    "static/js/main.6ebe3413.js"
+    "static/js/main.bb9bfbcf.js"
   ]
 }
