@@ -1,10 +1,12 @@
 import * as React from 'react';
+import {Feature} from "geojson";
+import {Layer} from "mapbox-gl";
 
 export interface ToolbarProps {
-    properties: any
+    feature: Feature & { layer: Layer } | null
 }
 
-function Toolbar(props: ToolbarProps) {
+export default function Toolbar(props: ToolbarProps) {
     const style = {
         position: 'absolute' as 'absolute',
         left: '5px',
@@ -18,10 +20,34 @@ function Toolbar(props: ToolbarProps) {
         padding: '15px'
     };
 
-    const address = props?.properties?.['address'] || "";
-    const uik = props?.properties?.['uik'] ||  "";
-    const flats = props?.properties?.['building:flats'] || "";
-    const halls = props?.properties?.['building:halls'] || "";
+    let title
+    let content
+    if (props.feature?.layer.id == "buildings") {
+        const uik = props?.feature?.properties?.['uik'] || "";
+        const flats = props?.feature?.properties?.['building:flats'] || "";
+        const halls = props?.feature?.properties?.['building:halls'] || "";
+        title = props?.feature?.properties?.['address'] || "";
+        content = (
+            <React.Fragment>
+                <b>УИК:</b> <span>№ {uik}</span> <br/>
+                {/*<b>Жителей:</b> {props.properties != null ? <span>{props.properties['address:residents']}</span> : ""}<br/>*/}
+                <b>Квартир:</b> <span>{flats}</span> <br/>
+                <b>Подъездов:</b> <span>{halls}</span><br/>
+            </React.Fragment>
+        )
+    } else if (props.feature?.layer.id == "electionCommissions") {
+        const description = props?.feature?.properties?.['description'] || "";
+        const address = props?.feature?.properties?.['address'] || "";
+        const phone = props?.feature?.properties?.['phone'] || "";
+        title = props?.feature?.properties?.['name'] || "";
+        content = (
+            <React.Fragment>
+                <b>Учреждение:</b> <span>{description}</span> <br/>
+                <b>Адрес:</b> <span>{address}</span> <br/>
+                <b>Телефон:</b> <span>{phone}</span><br/>
+            </React.Fragment>
+        )
+    }
 
     // const contacts = props.properties != null ?
     //     JSON.parse(props.properties.contacts != 'null' ? props.properties.contacts : '[]')
@@ -31,33 +57,30 @@ function Toolbar(props: ToolbarProps) {
     //             return <span key={index}>{fio} - {apartment}<br/></span>
     //         }) : <span/>
 
-    return <div style={style}>
+    return (
+        <div style={style}>
             <table style={{width: '100%', height: '100%', display: 'flex', flexFlow: 'column'}}>
                 <thead>
-                    <tr>
-                        <th colSpan={2}>
-                            <h4 style={{margin: '0px'}}>
-                                {address}
-                            </h4>
-                        </th>
-                    </tr>
+                <tr>
+                    <th colSpan={2}>
+                        <h4 style={{margin: '0px'}}>
+                            {title}
+                        </h4>
+                    </th>
+                </tr>
                 </thead>
                 <tbody style={{flex: '1 1 auto', display: 'block', overflowY: 'scroll'}}>
-                    <tr style={{textAlign: "left" as const}}>
-                        <td style={{padding: "5px", verticalAlign: "top" as const}}>
-                            <b>УИК:</b> <span>№ {uik}</span> <br/>
-                            {/*<b>Жителей:</b> {props.properties != null ? <span>{props.properties['address:residents']}</span> : ""}<br/>*/}
-                            <b>Квартир:</b> <span>{flats}</span> <br/>
-                            <b>Подъездов:</b> <span>{halls}</span><br/>
-                        </td>
-                        <td style={{padding: "5px", verticalAlign: "top" as const}}>
-                            {/*<b>Контакты:</b><br/>*/}
-                            {/*<span>{contacts}</span>*/}
-                        </td>
-                    </tr>
+                <tr style={{textAlign: "left" as const}}>
+                    <td style={{padding: "5px", verticalAlign: "top" as const}}>
+                        {content}
+                    </td>
+                    <td style={{padding: "5px", verticalAlign: "top" as const}}>
+                        {/*<b>Контакты:</b><br/>*/}
+                        {/*<span>{contacts}</span>*/}
+                    </td>
+                </tr>
                 </tbody>
             </table>
-        </div>;
+        </div>
+    )
 }
-
-export default Toolbar;

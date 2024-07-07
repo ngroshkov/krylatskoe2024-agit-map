@@ -3,8 +3,12 @@ import {Layer, Source} from 'react-map-gl';
 import turfBboxPolygon from '@turf/bbox-polygon';
 import turfDifference from '@turf/difference';
 import {featureCollection} from '@turf/helpers';
-import {Feature, FeatureCollection, MultiPolygon, Polygon} from 'geojson';
-import {FillExtrusionLayerSpecification, FillLayerSpecification} from "mapbox-gl";
+import {Feature, FeatureCollection, MultiPolygon, Point, Polygon} from 'geojson';
+import {
+    SymbolLayerSpecification,
+    FillExtrusionLayerSpecification,
+    FillLayerSpecification
+} from "mapbox-gl";
 
 export interface CityBoundaryLayerProps {
     featureCollection: FeatureCollection<Polygon | MultiPolygon>;
@@ -38,13 +42,13 @@ function CityBoundaryLayer(props: CityBoundaryLayerProps) {
 
 export interface BuildingsLayerProps {
     featureCollection: FeatureCollection<Polygon | MultiPolygon>;
-    clickedBuilding: Feature<Polygon | MultiPolygon> | null;
-    hoverBuildings: Feature<Polygon | MultiPolygon> | null;
+    clicked: Feature<Polygon | MultiPolygon> | null;
+    hovered: Feature<Polygon | MultiPolygon> | null;
 }
 
 function BuildingsLayer(props: BuildingsLayerProps) {
-    let clickedBuildingId = props?.clickedBuilding?.properties?.id || -1
-    let hoverBuildingsId = props?.hoverBuildings?.properties?.id || -1
+    let clickedId = props?.clicked?.properties?.id || -1
+    let hoverId = props?.hovered?.properties?.id || -1
     const style: Partial<FillExtrusionLayerSpecification> = {
         source: "buildingsSource",
         type: "fill-extrusion",
@@ -70,8 +74,47 @@ function BuildingsLayer(props: BuildingsLayerProps) {
         <React.Fragment>
             <Source id="buildingsSource" type="geojson" data={props.featureCollection}>
                 <Layer {...buildingStyle} />
-                <Layer {...clickedStyle} filter={['==', 'id', clickedBuildingId]}/>
-                <Layer {...hoveredStyle} filter={['==', 'id', hoverBuildingsId]}/>
+                <Layer {...clickedStyle} filter={['==', 'id', clickedId]}/>
+                <Layer {...hoveredStyle} filter={['==', 'id', hoverId]}/>
+            </Source>
+        </React.Fragment>
+    )
+}
+
+export interface ElectionCommissionLayerProps {
+    featureCollection: FeatureCollection<Point>;
+    clicked: Feature<Point> | null;
+    hovered: Feature<Point> | null;
+}
+
+function ElectionCommissionLayer(props: ElectionCommissionLayerProps) {
+    let clickedId = props?.clicked?.properties?.id || -1
+    let hoverId = props?.hovered?.properties?.id || -1
+    let symbolStyle: SymbolLayerSpecification = {
+        id: 'electionCommissions',
+        source: "electionCommissionSource",
+        type: "symbol",
+        layout: {
+            "icon-image": "star",
+            "icon-size": ['interpolate', ['linear'], ['zoom'], 10, 0.1, 15, 0.7],
+        },
+        paint: {
+            "icon-color": {
+                'property': 'color',
+                'type': 'identity'
+            },
+            "icon-opacity": [
+                "case",
+                ['==', ['get', 'id'], clickedId], 1,
+                ['==', ['get', 'id'], hoverId], 0.8,
+                0.5
+            ],
+        }
+    }
+    return (
+        <React.Fragment>
+            <Source id="electionCommissionSource" type="geojson" data={props.featureCollection}>
+                <Layer {...symbolStyle} />
             </Source>
         </React.Fragment>
     )
@@ -116,4 +159,4 @@ function BuildingsLayer(props: BuildingsLayerProps) {
 //     />);
 // }
 
-export {CityBoundaryLayer, BuildingsLayer}
+export {CityBoundaryLayer, BuildingsLayer, ElectionCommissionLayer}
