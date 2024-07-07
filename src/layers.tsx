@@ -47,8 +47,8 @@ export interface BuildingsLayerProps {
 }
 
 function BuildingsLayer(props: BuildingsLayerProps) {
-    let clickedId = props?.clicked?.properties?.id || -1
-    let hoverId = props?.hovered?.properties?.id || -1
+    let clickedId = props?.clicked?.properties?.id || 0
+    let hoverId = props?.hovered?.properties?.id || 0
     const style: Partial<FillExtrusionLayerSpecification> = {
         source: "buildingsSource",
         type: "fill-extrusion",
@@ -88,8 +88,8 @@ export interface ElectionCommissionLayerProps {
 }
 
 function ElectionCommissionLayer(props: ElectionCommissionLayerProps) {
-    let clickedId = props?.clicked?.properties?.id || -1
-    let hoverId = props?.hovered?.properties?.id || -1
+    let clickedId = props?.clicked?.properties?.id || 0
+    let hoverId = props?.hovered?.properties?.id || 0
     let symbolStyle: SymbolLayerSpecification = {
         id: 'electionCommissions',
         source: "electionCommissionSource",
