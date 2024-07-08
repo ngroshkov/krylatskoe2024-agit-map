@@ -22,7 +22,7 @@ export default function Toolbar(props: ToolbarProps) {
 
     let title
     let content
-    if (props.feature?.layer.id == "buildings") {
+    if (props.feature?.layer.id === "buildings") {
         const uik = props?.feature?.properties?.['uik'] || "";
         const flats = props?.feature?.properties?.['building:flats'] || "";
         const halls = props?.feature?.properties?.['building:halls'] || "";
@@ -35,7 +35,7 @@ export default function Toolbar(props: ToolbarProps) {
                 <b>Подъездов:</b> <span>{halls}</span><br/>
             </React.Fragment>
         )
-    } else if (props.feature?.layer.id == "electionCommissions") {
+    } else if (props.feature?.layer.id === "electionCommissions") {
         const description = props?.feature?.properties?.['description'] || "";
         const address = props?.feature?.properties?.['address'] || "";
         const phone = props?.feature?.properties?.['phone'] || "";

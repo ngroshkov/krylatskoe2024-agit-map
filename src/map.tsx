@@ -1,16 +1,19 @@
 import * as React from 'react';
-import InteractiveMap, {MapMouseEvent, NavigationControl} from 'react-map-gl';
+import {createRef, useEffect, useState} from 'react';
+import InteractiveMap, {MapMouseEvent, NavigationControl, useControl} from 'react-map-gl';
+import {Layer} from "mapbox-gl";
+import {DeckProps} from "@deck.gl/core";
+import {MapboxOverlay} from "@deck.gl/mapbox";
 import turfCentroid from '@turf/centroid';
 import {featureCollection} from '@turf/helpers';
-import {FeatureCollection, Feature, Polygon, MultiPolygon, Point} from 'geojson';
+import {Feature, FeatureCollection, MultiPolygon, Point, Polygon} from 'geojson';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import {CityBoundaryLayer, BuildingsLayer, ElectionCommissionLayer} from './layers';
+import {BuildingsLayer, CityBoundaryLayer, ElectionCommissionLayer} from './layers';
 import useMapImage from "./image";
 // import MapiClient from "@mapbox/mapbox-sdk/lib/classes/mapi-client";
 import mbxDatasets from "@mapbox/mapbox-sdk/services/datasets";
+import {ElectionCommissionBuilding, ElectionCommissionBuildingLayer} from "./deck-gl-layers";
 
-import {createRef, useEffect, useState} from "react";
-import {Layer} from "mapbox-gl";
 
 const accessToken = "pk.eyJ1Ijoia2xuNCIsImEiOiJjaW9sNjZlbWMwMDEwdzVtNmxxYjA2ZGozIn0.BytaphQwtjCVMGEaLlfb3Q";
 const MapiClient = require('@mapbox/mapbox-sdk')
@@ -28,17 +31,24 @@ const mapProperties = {
 
 const styleId = 'cl65cx61a000c15ljmv271d6d';
 const boundaryDatasetId = 'cly4bv93305ub1mocq5fyf8uq';
-const buildingDatasetId = 'cly4jnyos8ybp1tnx9skz7oi6';
+const buildingDatasetId = 'clycqi0vyrak21tp8vcv2zixm';
 const electionCommissionDatasetId = 'clya1iza4qop51mp8z6rjg6l9';
 
+function DeckGLOverlay(props: DeckProps) {
+    const overlay = useControl<any>(() => new MapboxOverlay(props));
+    overlay.setProps(props);
+    return null;
+}
+
 export interface MapProps {
-    onClick: (feature: Feature & {layer: Layer}) => void;
+    onClick: (feature: Feature & { layer: Layer }) => void;
 }
 
 export default function Map(props: MapProps) {
     const [boundary, setBoundary] = useState(featureCollection([]));
     const [buildings, setBuildings] = useState(featureCollection([]));
     const [electionCommissions, setElectionCommissions] = useState(featureCollection([]));
+    const [electionCommissionBuildings, setElectionCommissionBuildings] = useState([] as Array<ElectionCommissionBuilding>);
     const [clickedBuilding, setClickedBuilding] = useState(null);
     const [hoveredBuilding, setHoveredBuilding] = useState(null);
     const [clickedElectionCommission, setClickedElectionCommission] = useState(null);
@@ -99,39 +109,54 @@ export default function Map(props: MapProps) {
     let handleClick = (event: MapMouseEvent) => {
         let buildingFeature = event?.features?.find(f => f.layer.id === 'buildings') || null
         let electionCommissionFeature = event?.features?.find(f => f.layer.id === 'electionCommissions') || null
+        let electionCommissionBuildings: Array<ElectionCommissionBuilding> = []
+        if (buildingFeature) {
+            electionCommissionBuildings = [new ElectionCommissionBuilding(buildingFeature)]
+        } else if (electionCommissionFeature) {
+            electionCommissionBuildings = buildings.features
+                .filter(f => f?.properties?.uik_number === electionCommissionFeature?.properties?.uik)
+                .map(f => new ElectionCommissionBuilding(f))
+        }
         props.onClick(buildingFeature || electionCommissionFeature)
         setClickedBuilding(buildingFeature)
         setClickedElectionCommission(electionCommissionFeature)
+        setElectionCommissionBuildings(electionCommissionBuildings)
         setHoveredBuilding(null)
         setHoveredElectionCommission(null)
     }
 
     return (
-        <InteractiveMap
-            mapboxAccessToken={accessToken}
-            initialViewState={mapProperties}
-            style={{
-                position: 'absolute',
-                height: '100%',
-                width: '100%'
-            }}
-            mapStyle={`mapbox://styles/kln4/${styleId}`}
-            interactiveLayerIds={["buildings", "electionCommissions"]}
-            onClick={handleClick}
-            onMouseEnter={handleEnter}
-            onMouseLeave={handleLeave}
-            ref={mapRef as any}
-        >
-            <NavigationControl/>
-            <CityBoundaryLayer featureCollection={boundary as FeatureCollection<Polygon | MultiPolygon>}/>
-            <BuildingsLayer featureCollection={buildings as FeatureCollection<Polygon | MultiPolygon>}
-                            clicked={clickedBuilding}
-                            hovered={hoveredBuilding}
-            />
-            <ElectionCommissionLayer featureCollection={electionCommissions as FeatureCollection<Point>}
-                                     clicked={clickedElectionCommission}
-                                     hovered={hoveredElectionCommission}
-            />
-        </InteractiveMap>
+            <InteractiveMap
+                mapboxAccessToken={accessToken}
+                style={{
+                    position: 'absolute',
+                    height: '100%',
+                    width: '100%'
+                }}
+                initialViewState={mapProperties}
+                mapStyle={`mapbox://styles/kln4/${styleId}`}
+                interactiveLayerIds={["buildings", "electionCommissions"]}
+                onClick={handleClick}
+                onMouseEnter={handleEnter}
+                onMouseLeave={handleLeave}
+                ref={mapRef as any}
+            >
+                <NavigationControl/>
+                <CityBoundaryLayer featureCollection={boundary as FeatureCollection<Polygon | MultiPolygon>}/>
+                <BuildingsLayer featureCollection={buildings as FeatureCollection<Polygon | MultiPolygon>}
+                                clicked={clickedBuilding}
+                                hovered={hoveredBuilding}
+                />
+                <ElectionCommissionLayer featureCollection={electionCommissions as FeatureCollection<Point>}
+                                         clicked={clickedElectionCommission}
+                                         hovered={hoveredElectionCommission}
+                />
+                <DeckGLOverlay
+                    layers={[
+                        new ElectionCommissionBuildingLayer(electionCommissionBuildings),
+                    ]}
+                />
+            </InteractiveMap>
     )
 }
+
