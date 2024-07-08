@@ -29,8 +29,9 @@ export class ElectionCommissionBuildingLayer extends ArcLayer<ElectionCommission
                 getTargetPosition: (d: ElectionCommissionBuilding) => d.building.coordinates,
                 getSourceColor: (d: ElectionCommissionBuilding) => d.color,
                 getTargetColor: (d: ElectionCommissionBuilding) => d.color,
-                getWidth: 3,
+                getWidth: 2,
                 getHeight: 0.5,
+                opacity: 0.5,
             }
         );
     }
